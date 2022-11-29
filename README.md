@@ -20,60 +20,67 @@ Solusi yang saya ajukan yaitu dengan menggunakan 2 algoritma machine learning un
 - Content Based Filtering adalah algoritma yang merekomendasikan item serupa dengan apa yang disukai pengguna, berdasarkan tindakan mereka sebelumnya atau umpan balik eksplisit. Algoritma ini memberikan rekomendasi berdasarkan aktivitas pada masa lalu[3].
 
 ## Data Understanding
-Data yang digunakan adalah data yang ada pada kaggle [The Movies Dataset](https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset)
+Data yang digunakan adalah data yang ada pada kaggle [Movie Recommendation Data](https://www.kaggle.com/datasets/rohan4050/movie-recommendation-data)
 
-Dataset memiliki 7 *files* csv tepapi yang kita gunakan untuk sistem rekomendasi adalah:
- - movies_metadata.csv :  File Metadata Film utama. Berisi informasi tentang 45.000 film yang ditampilkan dalam kumpulan data Full MovieLens. Fitur termasuk poster, latar belakang, anggaran, pendapatan, tanggal rilis, bahasa, negara produksi, dan perusahaan.
- - links_small.csv : Berisi ID TMDB (The Movie Database) dan IMDB (Internet Movie Database) dari sebagian kecil dari 9.000 film dari Kumpulan Data Lengkap.
- - ratings_small.csv : Sub kumpulan 100.000 peringkat dari 700 pengguna di 9.000 film.
+Dataset memiliki 4 *files* csv yang kita gunakan untuk sistem rekomendasi adalah:
+ - movies.csv :  File Metadata Film utama. Berisi informasi tentang 9000 film yang ditampilkan dalam kumpulan data Full MovieLens. Fitur termasuk poster, latar belakang, anggaran, pendapatan, tanggal rilis, bahasa, negara produksi, dan perusahaan.
+ - links.csv : Berisi ID TMDB (The Movie Database) dan IMDB (Internet Movie Database) dari sebagian kecil dari 9.000 film dari Kumpulan Data Lengkap.
+ - ratings.csv : Sub kumpulan 100.000 peringkat dari 700 pengguna di 9.000 film.
+ - tags.csv : berisi label untuk film
  
- isi dari movies_metadata.csv
+ isi dari movies.csv
  
- |   | adult | genre    |    id | imdb_id   | original_language | original_title              | release_date | runtime | vote_average | vote_count |
-|---|-------|-----------|------:|-----------|-------------------|-----------------------------|--------------|---------|-------------:|------------|
-| 1 | false | Animation | 862   | tt0114709 | en                | Toy Story                   |   1995-10-30 | 81.0    | 7.7          | 5415.0     |
-| 2 | false | Adventure | 8844  | tt0113497 | en                | Jumanji                     |   1995-12-15 | 104.0   | 6.9          | 2413.0     |
-| 3 | false | Romance   | 15602 | tt0113228 | en                | Grumpier Old Men            |   1995-12-22 | 101.0   | 6.5          | 92.0       |
-| 4 | false | Comedy    | 31357 | tt0114885 | en                | Waiting to Exhale           |   1995-12-22 | 127.0   | 6.1          | 34.0       |
-| 5 | false | Comedy    | 11862 | tt0113041 | en                | Father of the Bride Part II |   1995-02-10 | 106.0   | 5.7          | 173.0      |
+|   | movieId | title                              | genres                                          |
+|---|---------|------------------------------------|-------------------------------------------------|
+| 1 | 1       | Toy Story (1995)                   | Adventure\|Animation\|Children\|Comedy\|Fantasy |
+| 2 | 2       | Jumanji (1995)                     | Adventure\|Children\|Fantasy                    |
+| 3 | 3       | Grumpier Old Men (1995)            | Comedy\|Romance                                 |
+| 4 | 4       | Waiting to Exhale (1995)           | Comedy\|Drama\|Romance                          |
+| 5 | 5       | Father of the Bride Part II (1995) | Comedy                                          |
 
-isi dari links_small.csv 
+isi dari links.csv 
 
-|   |  tmbd_id   |
+| imdbId  |  tmbdId   | 
 |---|-------|
-| 1 |   862 |
-| 2 | 8844  |
-| 3 | 15602 |
-| 4 | 31357 |
-| 5 | 11862 |
+| 114709 |   862 |
+| 113497 | 8844  |
+| 113228 | 15602 |
+| 114885 | 31357 |
+| 113041 | 11862 |
 
-isi dari ratings_small.csv
+isi dari ratings.csv
 |   | userId | movieId | rating |
 |---|--------|---------|--------|
-| 1 | 1      | 31      | 2.5    |
-| 2 | 1      | 1029    | 3.0    |
-| 3 | 1      | 1061    | 3.0    |
-| 4 | 1      | 1129    | 2.0    |
-| 5 | 1      | 1172    | 4.0    |
+| 1 | 1      | 1      | 4.0    |
+| 2 | 1      | 3    | 4.0    |
+| 3 | 1      | 6    | 4.0    |
+| 4 | 1      | 47    | 5.0    |
+| 5 | 1      | 50    | 5.0    |
 
-- adult - merupakan nilai untuk film berkategori berdasarkan umur. ketika nilai adult "false" berarti film tersebut bisa ditonton oleh semua umur, apabila nilai adult "true" maka film tersebut hanya untuk orang dewasa.
+isi dari tags.csv
+
+|   | userId | movieID | tag             |
+|---|--------|---------|-----------------|
+| 1 | 2      | 60756   | funny           |
+| 2 | 2      | 60756   | Highly quotable |
+| 3 | 2      | 60756   | will ferrell    |
+| 4 | 2      | 89774   | Boxing story    |
+| 5 | 2      | 89774   | MMA             |
+
+Keterangan kolom:
 - genre - merupakan ragam jenis film
-- id - merupakan TMBD id
-- imbd_id - merupakan IMBD id
-- original_language - merupakan bahasa original film tersebut en berarti english
-- original_title - merupakan judul film
-- release_date - merupakan tanggal film di rilis
-- runtime = durasi film
-- vote_average - nilai rata-rata voting
-- vote_count - jumlah suara yang memberikan vote
+- tmbdId - merupakan TMBD id
+- imbdId - merupakan IMBD id
+- title - merupakan judul film
 - movieId - TMBD id
 - rating - nilai rating
+- tag - label film
 
 ## Data Preparation
 Teknik Data Preperation yang digunakan adalah:
--  Menggunakan sebagian dari semua film yang tersedia karena keterbatasan daya komputasi yang tersedia
--  Mengubah jenis data pada "id" menjadi int dan Drop data yang menyebabkan error karena tidak dapat dikonversi
-- TrainTestSplit() untuk membagi dataset menjadi data latih (train) dan data uji (test) merupakan hal yang harus dilakukan sebelum membuat model. Mempertahankan sebagian data yang ada untuk menguji seberapa baik generalisasi model terhadap data baru. nilai yang digunakan untuk test adalah 0.25 atau 25% sehingga nilai yang digunakan untuk train adalah 0.75 atau 75% sehingga perbandingan rasio train/test adalah 75:25.
+-  menggabungkan isi dari semua file menjadi satu buah tabel output yang berisi userId,movieId,ratings,timestamp,title,genres.
+- menkonversi beberapa data menjadi bentuk list dan dictonary.
+- TrainTestSplit() untuk membagi dataset menjadi data latih (train) dan data uji (test) merupakan hal yang harus dilakukan sebelum membuat model. Mempertahankan sebagian data yang ada untuk menguji seberapa baik generalisasi model terhadap data baru. nilai yang digunakan untuk test adalah 0.2 atau 20% sehingga nilai yang digunakan untuk train adalah 0.8 atau 80% sehingga perbandingan rasio train/test adalah 80:20.
 
 ## Modeling
 ### Content Based Filtering
@@ -86,8 +93,8 @@ Teknik Data Preperation yang digunakan adalah:
 #### Kekurangan Content Based Filtering
 - Karena representasi fitur item dirancang secara manual hingga tingkat ini, teknik ini memerlukan banyak pengetahuan domain. Oleh karena itu, model hanya bisa sebaik fitur yang dirancang dengan tangan
 - Model hanya dapat membuat rekomendasi berdasarkan minat pengguna yang ada. Dengan kata lain, model memiliki kemampuan terbatas untuk memperluas minat pengguna yang ada
-#### 10 TOP-N Recomended Content Base Filtering
-Rekomendasi tersebut dihasilkan ketika user menyukai film The Godfather. hasil rekomendasi tersebut didapat berdasarkan genre dari film
+#### 5 TOP-N Recomended Content Base Filtering
+Rekomendasi tersebut dihasilkan ketika user menyukai film Grumpier Old Men (1995). hasil rekomendasi tersebut didapat berdasarkan genre dari film
 
 |   | movie_name               | genre           |
 |---|--------------------------|-----------------|
@@ -107,8 +114,36 @@ Metode Colaborative filtering merupakan metode yang melakukan proses penyaringan
 - Prediksi model untuk pasangan (pengguna, item) tertentu adalah produk titik dari penyematan yang sesuai. Jadi, jika item tidak terlihat selama pelatihan, sistem tidak dapat membuat penyematan untuk item tersebut dan tidak dapat melakukan kueri model dengan item ini. Masalah ini sering disebut masalah cold start
 - Fitur samping adalah setiap fitur di luar kueri atau ID item. Untuk rekomendasi film, fitur samping mungkin menyertakan negara atau usia. Menyertakan fitur samping yang tersedia akan meningkatkan kualitas model. Meskipun mungkin tidak mudah untuk menyertakan fitur samping di WALS, generalisasi WALS memungkinkan hal ini.
 
-#### 10 TOP-N Recommended Collaborative Filtering
-sadasdasd
+#### 5 TOP-N Recommended Collaborative Filtering
+Hasil Filtering tersebut di rekomandasikan untuk user 64 karena user 64 memiliki rating tertinggi dalam genre drama,action
+
+|   | title                                                             | genres                         |
+|---|-------------------------------------------------------------------|--------------------------------|
+|  1 | Umbrellas of Cherbourg, The (Parapluies de Cherbourg, Les) (1964) | Drama\|Musical\|Romance        |
+|  2 | Paths of Glory (1957)                                             | Drama\|War                     |
+|  3 | Man Bites Dog (C'est arrivé près de chez vous) (1992)             | Comedy\|Crime\|Drama\|Thriller |
+|  4 | Adam's Rib (1949)                                                 | Comedy\|Romance                |
+|  5 | Jetée, La (1962)                                                  | Romance\|Sci-Fi                |
 
 ## Evaluasi
+### Content Based Filtering
+|   | movie_name               | genre           |
+|---|--------------------------|-----------------|
+| 1 | Coming to America (1988) | Comedy\|Romance |
+| 2 | Woman of the Year (1942) | Comedy\|Romance |
+| 3 | Crossing Delancey (1988) | Comedy\|Romance |
+| 4 | Desk Set (1957)          | Comedy\|Romance |
+| 5 | Legally Blonde (2001)    | Comedy\|Romance |
 
+Hasil yang didapat menggunakan content based filtering ketika user menyukai film yang berjudul Grumpier Old Men (1995) dengan genre comedy/romance, sistem merekomendasikan 5 film dengan genre yang sama yaitu comedy/romance sehingga nilai presisi dari sistem rekomendasi content based filtering adalah 100%.
+### Collaborative Filtering
+![image](https://user-images.githubusercontent.com/118952537/204417887-abc30604-ce97-4714-abfc-2899bf421442.png)
+- Root Mean Squared Error (RMSE) merupakan salah satu cara untuk mengevaluasi model regresi dengan mengukur tingkat akurasi hasil perkiraan suatu model. RMSE dihitung dengan mengkuadratkan error (prediksi – observasi) dibagi dengan jumlah data (= rata-rata), lalu diakarkan. Nilai RMSE rendah menunjukkan bahwa variasi nilai yang dihasilkan oleh suatu model prakiraan mendekati variasi nilai observasinya. RMSE menghitung seberapa berbedanya seperangkat nilai. Semakin kecil nilai RMSE, semakin dekat nilai yang diprediksi dan diamati.
+## Kesimpulan
+ Sistem rekomendasi yang dibuat berdasarkan content based filtering merekomendasikan user berdasarkan genre yang disukai user dan mendapatkan nilai presisi sebesar 100% atau film yang direkomendasi memiliki genre yang sama yang disukai oleh user. Sistem rekomendasi yang dibuat berdasarkan collaborative filtering memiliki nilai RMSE sebesar 0.19 berarti semakin mirip genre yang direkomendasi sistem untuk user.
+## Referensi
+[1]	“THE EFFECTIVENESS OF WATCHING ENGLISH MOVIE AND THE STUDENTS’ VOCABULARY ENRICHMENT AT THE TENTH GRADE STUDENTS OF MA TERPADU SUWARGI BUWANA DJATI GREGED-CIREBON.”
+
+[2]	B. Schafer, “Collaborative Filtering Recommender Systems DEVELOPMENT OF REMOTE LABORATORIES FOR INTERNET-BASED ENGINEERING EDUCATION View project,” 2007. [Online]. Available: https://www.researchgate.net/publication/200121027
+
+[3]	“Content-Based Recommendation Systems.” [Online]. Available: https://www.researchgate.net/publication/236895069
